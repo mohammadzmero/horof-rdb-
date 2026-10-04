@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة بطل الحروف العربية - مدرسة ذكور الشهيدين بلال وأشرف الأساسية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #0984e3, #6c5ce7);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .game-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 850px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        header {
+            margin-bottom: 20px;
+            border-bottom: 3px dashed #74b9ff;
+            padding-bottom: 15px;
+        }
+        header h1 {
+            color: #2d3436;
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+        header p {
+            color: #0984e3;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .login-box input {
+            width: 80%;
+            padding: 15px;
+            font-size: 1.3rem;
+            border: 3px solid #0984e3;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            outline: none;
+        }
+        .btn {
+            background: #00b894;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,184,148,0.4);
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #00cec9;
+            transform: scale(1.05);
+        }
+        .question-box {
+            font-size: 1.4rem;
+            color: #2d3436;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: #dfe6e9;
+            padding: 18px;
+            border-radius: 15px;
+            border-right: 6px solid #0984e3;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            background: #ffeaa7;
+            border: 3px solid #fdcb6e;
+            padding: 20px;
+            font-size: 1.8rem;
+            font-weight: 900;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #2d3436;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .option-btn:hover {
+            background: #fab1a0;
+            transform: scale(1.03);
+            border-color: #e17055;
+        }
+        .speaker-icon {
+            font-size: 1.5rem;
+            background: #0984e3;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            margin: 0 auto 15px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(9,132,227,0.4);
+            transition: 0.2s;
+        }
+        .speaker-icon:hover {
+            transform: scale(1.1);
+        }
+        .feedback {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 10px;
+            min-height: 35px;
+        }
+        .correct {
+            color: #00b894;
+        }
+        .wrong {
+            color: #d63031;
+        }
+        .msg-box {
+            background: #ff7675;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-weight: 700;
+            display: inline-block;
+            display: none;
+        }
+        .certificate {
+            background: linear-gradient(135deg, #fff9c4, #fffde7);
+            border: 8px solid #f39c12;
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .certificate h2 {
+            color: #d35400;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        .certificate h3 {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+        .certificate p {
+            color: #34495e;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+        .signature-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1rem;
+            border-top: 2px dashed #f39c12;
+            padding-top: 12px;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall 3s linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <header>
+        <h1>مدرسة ذكور الشهيدين بلال وأشرف الأساسية</h1>
+        <p>إشراف المعلم الفاضل: محمد عبد الرحمن</p>
+    </header>
+
+    <!-- شاشة تسجيل اسم الطالب -->
+    <div id="loginScreen" class="screen active">
+        <h2>أهلاً وسهلاً بك يا بطل المستقبل المشرق! 🌟</h2>
+        <p>أنت قادم لتكون أذكى بطل في عالم الحروف العربية (ر، د، ب)! هيا اكتب اسمك الثنائي لننطلق في مغامرتنا الممتعة:</p>
+        <div class="login-box">
+            <input type="text" id="studentNameInput" placeholder="اكتب اسمك هنا يا بطل...">
+            <div id="customAlert" class="msg-box">الرجاء كتابة اسم البطل أولاً لنبدأ المغامرة!</div>
+            <br><br>
+            <button class="btn" onclick="startJourney()">ابدأ المغامرة الآن 🚀</button>
+        </div>
+    </div>
+
+    <!-- المرحلة الأولى: تحدي الحروف -->
+    <div id="stage1" class="screen">
+        <button class="speaker-icon" onclick="speakCurrentQuestion(s1Items, s1Index)" title="استمع للسؤال">🔊</button>
+        <div class="question-box" id="s1QuestionText"></div>
+        <div class="options-grid" id="s1Options"></div>
+        <div class="feedback" id="s1Feedback"></div>
+    </div>
+
+    <!-- المرحلة الثانية: تحدي المقاطع الطويلة -->
+    <div id="stage2" class="screen">
+        <button class="speaker-icon" onclick="speakCurrentQuestion(s2Items, s2Index)" title="استمع للسؤال">🔊</button>
+        <div class="question-box" id="s2QuestionText"></div>
+        <div class="options-grid" id="s2Options"></div>
+        <div class="feedback" id="s2Feedback"></div>
+    </div>
+
+    <!-- المرحلة الثالثة: تحدي الكلمات -->
+    <div id="stage3" class="screen">
+        <button class="speaker-icon" onclick="speakCurrentQuestion(s3Items, s3Index)" title="استمع للسؤال">🔊</button>
+        <div class="question-box" id="s3QuestionText"></div>
+        <div class="options-grid" id="s3Options"></div>
+        <div class="feedback" id="s3Feedback"></div>
+    </div>
+
+    <!-- المرحلة الرابعة: قطار تكوين الكلمات من الحروف -->
+    <div id="stage4" class="screen">
+        <button class="speaker-icon" onclick="speakCurrentQuestion(s4Items, s4Index)" title="استمع للسؤال">🔊</button>
+        <div class="question-box" id="s4QuestionText"></div>
+        <div class="options-grid" id="s4Options"></div>
+        <div class="feedback" id="s4Feedback"></div>
+    </div>
+
+    <!-- شاشة شهادة التقدير الفخرية والاحتفالية -->
+    <div id="certificateScreen" class="screen">
+        <div class="certificate">
+            <h2>🏆 شهادة تقدير وتميز تفوق 🏆</h2>
+            <h3>صادرة عن مدرسة ذكور الشهيدين بلال وأشرف الأساسية</h3>
+            <p>تفخر إدارة المدرسة ومعلمها الفاضل <strong>المعلم محمد عبد الرحمن</strong> بالثناء العطِر والتقدير الكبير على الأداء المذهل والمستوى المشرّف جداً للطالب النجم:</p>
+            <p style="font-size: 1.7rem; color: #d35400; font-weight: 900;" id="certStudentName"></p>
+            <p>وذلك لتميزه الباهر وإتقانه الرائع لحروف ومقاطع وكلمات لغتنا العربية الجميلة (ر، د، ب) بكل إبداع وتألق.</p>
+            <p style="margin-top: 8px; font-size: 1rem; color: #27ae60;"><strong>كل الشكر والتقدير للأهالي الكرام وإدارة المدرسة</strong> على جهودهم المباركة ومتابعتهم المستمرة التي أثمرت هذا النجاح الباهر.</p>
+            <div class="signature-area">
+                <span>إدارة المدرسة</span>
+                <span>المعلم: محمد عبد الرحمن</span>
+            </div>
+        </div>
+        <br>
+        <button class="btn" onclick="location.reload()">لعب مرة أخرى 🔄</button>
+    </div>
+</div>
+
+<script>
+    let studentName = "";
+
+    function speak(text, callback) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ar-SA';
+            utterance.rate = 0.75; 
+            utterance.pitch = 1.1;
+            if (callback) {
+                utterance.onend = callback;
+            }
+            window.speechSynthesis.speak(utterance);
+        } else if (callback) {
+            callback();
+        }
+    }
+
+    function startJourney() {
+        const input = document.getElementById('studentNameInput').value.trim();
+        const alertBox = document.getElementById('customAlert');
+        if (!input) {
+            alertBox.style.display = 'block';
+            speak("الرجاء كتابة اسم البطل أولاً لنبدأ المغامرة!");
+            return;
+        }
+        alertBox.style.display = 'none';
+        studentName = input;
+        document.getElementById('loginScreen').classList.remove('active');
+        document.getElementById('stage1').classList.add('active');
+        
+        speak("أهلاً ومرحباً بك يا بطلنا المتميز " + studentName + " في مدرسة ذكور الشهيدين بلال وأشرف الأساسية، مع المعلم محمد عبد الرحمن. أنت رائع حقاً، هيا نبدأ المرحلة الأولى.", loadStage1);
+    }
+
+    // المرحلة الأولى: الحروف (5 أسئلة - خيارات حروف دقيقة بدون حركات قصيرة)
+    let s1Items = [
+        { question: "اختر حرف الباء:", target: "ب", options: ["ر", "د", "ب", "بـ"] },
+        { question: "اختر حرف الدال:", target: "د", options: ["ب", "د", "ر", "بـ"] },
+        { question: "اختر حرف الراء:", target: "ر", options: ["د", "ب", "ر", "بـ"] },
+        { question: "اختر شكل حرف الباء في أول الكلمة:", target: "بـ", options: ["ر", "د", "بـ", "ب"] },
+        { question: "اختر حرف الراء مرة أخرى:", target: "ر", options: ["ر", "ب", "د", "بـ"] }
+    ];
+    let s1Index = 0;
+
+    function loadStage1() {
+        if (s1Index >= s1Items.length) {
+            document.getElementById('stage1').classList.remove('active');
+            document.getElementById('stage2').classList.add('active');
+            s2Index = 0;
+            speak("أنت بطل ذكي جداً! لقد أنهيت مرحلة الحروف بنجاح. ننتقل الآن إلى المرحلة الثانية، تحدي المقاطع الطويلة.", loadStage2);
+            return;
+        }
+        let current = s1Items[s1Index];
+        document.getElementById('s1QuestionText').innerText = current.question;
+        let grid = document.getElementById('s1Options');
+        grid.innerHTML = "";
+        
+        let shuffled = [...current.options].sort(() => Math.random() - 0.5);
+        shuffled.forEach(opt => {
+            let btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(opt, current.target, 's1Feedback', () => { s1Index++; loadStage1(); });
+            grid.appendChild(btn);
+        });
+        document.getElementById('s1Feedback').innerText = "";
+        speak(current.question);
+    }
+
+    // المرحلة الثانية: المقاطع الطويلة (5 أسئلة - خيارات مقاطع طويلة بدون حركات قصيرة)
+    let s2Items = [
+        { question: "اختر المقطع الطويل: را", target: "را", options: ["را", "دا", "با", "رو"] },
+        { question: "اختر المقطع الطويل: دو", target: "دو", options: ["ري", "دو", "بي", "دا"] },
+        { question: "اختر المقطع الطويل: بي", target: "بي", options: ["با", "بو", "بي", "را"] },
+        { question: "اختر المقطع الطويل: دا", target: "دا", options: ["دا", "رو", "بي", "دو"] },
+        { question: "اختر المقطع الطويل: بو", target: "بو", options: ["را", "بو", "ري", "با"] }
+    ];
+    let s2Index = 0;
+
+    function loadStage2() {
+        if (s2Index >= s2Items.length) {
+            document.getElementById('stage2').classList.remove('active');
+            document.getElementById('stage3').classList.add('active');
+            s3Index = 0;
+            speak("ممتاز ورائع! لقد أبدعت في المقاطع الطويلة. ننتقل الآن إلى المرحلة الثالثة، تحدي الكلمات.", loadStage3);
+            return;
+        }
+        let current = s2Items[s2Index];
+        document.getElementById('s2QuestionText').innerText = current.question;
+        let grid = document.getElementById('s2Options');
+        grid.innerHTML = "";
+
+        let shuffled = [...current.options].sort(() => Math.random() - 0.5);
+        shuffled.forEach(opt => {
+            let btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(opt, current.target, 's2Feedback', () => { s2Index++; loadStage2(); });
+            grid.appendChild(btn);
+        });
+        document.getElementById('s2Feedback').innerText = "";
+        speak(current.question);
+    }
+
+    // المرحلة الثالثة: الكلمات (5 أسئلة - باب، دار، دود، داري، دوري)
+    let s3Items = [
+        { question: "اختر الكلمة الصحيحة: باب", target: "باب", options: ["باب", "دار", "دود", "داري"] },
+        { question: "اختر الكلمة الصحيحة: دار", target: "دار", options: ["دوري", "دار", "بير", "باب"] },
+        { question: "اختر الكلمة الصحيحة: دود", target: "دود", options: ["دار", "دود", "باب", "داري"] },
+        { question: "اختر الكلمة الصحيحة: داري", target: "داري", options: ["دوري", "داري", "باب", "دود"] },
+        { question: "اختر الكلمة الصحيحة: دوري", target: "دوري", options: ["دار", "باب", "دوري", "داري"] }
+    ];
+    let s3Index = 0;
+
+    function loadStage3() {
+        if (s3Index >= s3Items.length) {
+            document.getElementById('stage3').classList.remove('active');
+            document.getElementById('stage4').classList.add('active');
+            s4Index = 0;
+            speak("أنت مذهل حقاً! قاربنا على النهاية. ننتقل إلى المرحلة الرابعة، قطار تكوين الكلمات.", loadStage4);
+            return;
+        }
+        let current = s3Items[s3Index];
+        document.getElementById('s3QuestionText').innerText = current.question;
+        let grid = document.getElementById('s3Options');
+        grid.innerHTML = "";
+
+        let shuffled = [...current.options].sort(() => Math.random() - 0.5);
+        shuffled.forEach(opt => {
+            let btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(opt, current.target, 's3Feedback', () => { s3Index++; loadStage3(); });
+            grid.appendChild(btn);
+        });
+        document.getElementById('s3Feedback').innerText = "";
+        speak(current.question);
+    }
+
+    // المرحلة الرابعة: تكوين الكلمات من الحروف (5 أسئلة)
+    let s4Items = [
+        { question: "نُكَوِّنُ من الحروف [ب - ا - ب] كلمة:", target: "باب", options: ["باب", "دار", "دود"] },
+        { question: "نُكَوِّنُ من الحروف [د - ا - ر] كلمة:", target: "دار", options: ["بير", "دار", "دوري"] },
+        { question: "نُكَوِّنُ من الحروف [د - و - د] كلمة:", target: "دود", options: ["دود", "باب", "داري"] },
+        { question: "نُكَوِّنُ من الحروف [د - ا - ر - ي] كلمة:", target: "داري", options: ["داري", "دوري", "باب"] },
+        { question: "نُكَوِّنُ من الحروف [د - و - ر - ي] كلمة:", target: "دوري", options: ["باب", "دوري", "دار"] }
+    ];
+    let s4Index = 0;
+
+    function loadStage4() {
+        if (s4Index >= s4Items.length) {
+            document.getElementById('stage4').classList.remove('active');
+            showCertificate();
+            return;
+        }
+        let current = s4Items[s4Index];
+        document.getElementById('s4QuestionText').innerText = current.question;
+        let grid = document.getElementById('s4Options');
+        grid.innerHTML = "";
+
+        let shuffled = [...current.options].sort(() => Math.random() - 0.5);
+        shuffled.forEach(opt => {
+            let btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(opt, current.target, 's4Feedback', () => { s4Index++; loadStage4(); });
+            grid.appendChild(btn);
+        });
+        document.getElementById('s4Feedback').innerText = "";
+        speak(current.question);
+    }
+
+    function checkAnswer(selected, target, feedbackId, nextCallback) {
+        let feedbackEl = document.getElementById(feedbackId);
+        if (selected === target) {
+            feedbackEl.className = "feedback correct";
+            feedbackEl.innerText = "أحسنت يا بطل! إجابة صحيحة وموفقة 🌟";
+            speak("أحسنت يا بطل!", () => {
+                setTimeout(nextCallback, 800);
+            });
+        } else {
+            feedbackEl.className = "feedback wrong";
+            feedbackEl.innerText = "حاول مرة أخرى يا بطل، أنت تستطيع!";
+            speak("حاول مرة أخرى يا بطل.");
+        }
+    }
+
+    function speakCurrentQuestion(itemsList, currentIndex) {
+        if(itemsList[currentIndex]) {
+            speak(itemsList[currentIndex].question);
+        }
+    }
+
+    function showCertificate() {
+        document.getElementById('certificateScreen').classList.add('active');
+        document.getElementById('certStudentName').innerText = studentName;
+        
+        // تأثير احتفالي (Confetti)
+        for (let i = 0; i < 70; i++) {
+            let conf = document.createElement('div');
+            conf.className = 'confetti';
+            conf.style.left = Math.random() * 100 + '%';
+            conf.style.top = -10 + 'px';
+            conf.style.backgroundColor = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'][Math.floor(Math.random()*5)];
+            conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            document.getElementById('certificateScreen').appendChild(conf);
+        }
+
+        let certText = "مبارك للبطل المتميز " + studentName + " حصوله على شهادة التقدير والتميز من مدرسة ذكور الشهيدين بلال وأشرف الأساسية، بإشراف المعلم محمد عبد الرحمن. وكل الشكر والتقدير للأهالي الكرام وإدارة المدرسة على دعمهم وجهودهم العظيمة.";
+        speak(certText);
+    }
+</script>
+
+</body>
+</html>
